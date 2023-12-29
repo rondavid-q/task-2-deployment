@@ -1,5 +1,5 @@
 This is a sample nodejs project sourced from the github public repos for the purpose of this task.
-
+The service is exposed via port 7000 - This has been changed in the sample project.
 This repo has the nodejs project along with the Dockerfile to dockerize the application adn docker-compose file to bring up the conatiner instances.
 
 The webhook has been attached along with this project and its been configured in Jenkins which is accessible and shared via mail.
@@ -24,5 +24,13 @@ The stesp include:
 
 The above job will be teriggreed via webhook
 
+Note:
+The deployed machine should have the below packages:
 
-The server where it is deployed is : 
+1. awscli
+2. docker
+
+The above packages can be installed and configured via ansbile during provision of each EC2 instance.
+
+
+The server (URL to test) where it is deployed and can be checked post deployment: 

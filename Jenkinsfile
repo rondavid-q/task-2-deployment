@@ -16,6 +16,14 @@ pipeline {
                 git ( url: "https://github.com/rondavid-q/task-2-deployment.git", credentialsId: "github", branch: "main" )
             }
         }
+
+       // stage(Run NPM TEST) {
+       //     steps{
+       //         script {
+       //             sh "npm test"
+       //         }
+       //     }
+       // }
         
         stage('Build Docker Image') {
             steps {
@@ -39,7 +47,13 @@ pipeline {
         stage('Stashing docker-compose file') {
             steps {
                 script {
-                    sh "ls -al"
+                    def filePath = "${env.WORKSPACE}/.env"
+                    
+                    def fileContent = "IMAGE_NAME=${env.IMAGE_NAME} /n"
+                    fileContent = "CHOKIDAR_USEPOLLING=true"
+                    writeFile file: filePath, text: fileContent
+                    sh "cat ${filePath}"
+                    stash includes: '.env', name: 'ARTEFACT-1'
                     stash includes: 'docker-compose.yml', name: 'ARTEFACT'
                 }
             }
@@ -55,6 +69,7 @@ pipeline {
                     withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: "aws-key", secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
                         sh "aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${env.ECR_URL}"
                         unstash 'ARTEFACT'
+                        unstash 'ARTEFACT-1'
                         sh "cat docker-compose.yml"
                         sh "docker-compose up -d"
                     }

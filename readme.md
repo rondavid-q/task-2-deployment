@@ -33,4 +33,4 @@ The deployed machine should have the below packages:
 The above packages can be installed and configured via ansbile during provision of each EC2 instance.
 
 
-The server (URL to test) where it is deployed and can be checked post deployment: 
+The server (URL to test) where it is deployed and can be checked post deployment: http://91.107.210.94:7000/

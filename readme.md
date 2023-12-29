@@ -21,6 +21,7 @@ The stesp include:
 2. Building the docker image
 3. Pushing the docker iage to repository
 4. Deploying the docker container onto EC2 instance.
+5. You can include test cases by running npm test and I have commented out that step as this sample project doest have much to test upon.
 
 The above job will be teriggreed via webhook
 

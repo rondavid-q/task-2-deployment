@@ -15,3 +15,14 @@ I have used the machine that was created during my task adn have configured it a
 This can also be done via ssh scripts in jenkins. To maximise the security and for teh same concerns not to expose the exposee ssh keys, it is done via node agent.
 
 Please login to the Jenkins that is shared via mail to access the pipleine : task-2-deployment.
+
+The stesp include:
+1. cloning the repo
+2. Building the docker image
+3. Pushing the docker iage to repository
+4. Deploying the docker container onto EC2 instance.
+
+The above job will be teriggreed via webhook
+
+
+The server where it is deployed is : 

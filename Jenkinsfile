@@ -39,7 +39,8 @@ pipeline {
         stage('Stashing docker-compose file') {
             steps {
                 script {
-                    stash includes: 'docker-compose.yaml', name: 'ARTEFACT-1'
+                    sh "ls -al"
+                    stash includes: 'docker-compose.yml', name: 'ARTEFACT'
                 }
             }
         }
@@ -53,8 +54,8 @@ pipeline {
                 script {
                     withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: "aws-key", secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
                         sh "aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${env.ECR_URL}"
-                        unstash 'ARTEFACT-1'
-                        sh "cat docker-compose.yaml"
+                        unstash 'ARTEFACT'
+                        sh "cat docker-compose.yml"
                         sh "docker-compose up -d"
                     }
                 }

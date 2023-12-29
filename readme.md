@@ -34,3 +34,6 @@ The above packages can be installed and configured via ansbile during provision 
 
 
 The server (URL to test) where it is deployed and can be checked post deployment: http://91.107.210.94:7000/
+
+The output should --> Örnek Node.js Projesi
+

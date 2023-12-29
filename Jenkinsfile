@@ -5,9 +5,9 @@ pipeline {
         AWS_ACCOUNT_ID = '340539263267'
         AWS_DEFAULT_REGION = 'ap-south-1'
         ECR_URL = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
-        IMAGE_REPO_NAME = 'admin-service'
+        IMAGE_REPO_NAME = 'node-service'
         IMAGE_NAME = "${env.ECR_URL}/${IMAGE_REPO_NAME}:${BUILD_NUMBER}"
-        DEPLOY_AGENT_LABEL = 'Dev'
+        DEPLOY_AGENT_LABEL = 'dev'
      }
     
         stages{
@@ -28,7 +28,7 @@ pipeline {
         stage('Push to ECR') {
             steps {
                 script {
-                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: "witmer-dev-0", secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: "aws-key", secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
                         sh "aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${env.ECR_URL}"
                         sh "docker push ${env.IMAGE_NAME}"
                     }
@@ -36,7 +36,7 @@ pipeline {
             }
         }
         
-        stage('Creating ENV FILE') {
+        stage('Stashing docker-compose file') {
             steps {
                 script {
                     stash includes: 'docker-compose.yaml', name: 'ARTEFACT-1'
@@ -44,14 +44,14 @@ pipeline {
             }
         }
         
-                stage('Deploy to EC2') {
+        stage('Deploy to EC2') {
             agent {
                 label "${env.DEPLOY_AGENT_LABEL}"
             }
             
             steps {
                 script {
-                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: "witmer-dev-0", secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: "aws-key", secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
                         sh "aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${env.ECR_URL}"
                         unstash 'ARTEFACT-1'
                         sh "cat docker-compose.yaml"
@@ -60,13 +60,13 @@ pipeline {
                 }
             }
         }
-        stage('Clean Workspace') {
-            steps {
-                script {
-                    cleanWs()
-                   }
-                }
-            }
+        //stage('Clean Workspace') {
+        //    steps {
+        //        script {
+        //            cleanWs()
+        //           }
+        //        }
+        //    }
         }
 }
     

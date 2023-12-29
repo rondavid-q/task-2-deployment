@@ -1,11 +1,8 @@
-FROM node:21-alpine
+FROM node:14.17.5
 
-WORKDIR /usr/src/app
-
+WORKDIR /app
+COPY package.json ./
+RUN npm install
 COPY . .
-
-RUN npm install 
-
-EXPOSE 8000
-
-CMD ["npm", "run", "start"]
+CMD ["node","app.js"]
+EXPOSE 3005
